@@ -1,0 +1,39 @@
+import yfinance as yf
+
+print("=========================================")
+print("  FINANCIAL RATIO ANALYZER (AAPL Test)   ")
+print("=========================================\n")
+
+# 1. Fetch Apple's market data from Yahoo Finance
+ticker_symbol = "AAPL"
+print(f"Fetching financial statement data for {ticker_symbol}...\n")
+company = yf.Ticker(ticker_symbol)
+
+try:
+    # 2. Extract Balance Sheet and Income Statement data
+    balance_sheet = company.balance_sheet
+    financials = company.financials
+    
+    # 3. Pull specific accounting metrics (using the most recent year)
+    current_assets = balance_sheet.loc['Current Assets'].iloc[0]
+    current_liabilities = balance_sheet.loc['Current Liabilities'].iloc[0]
+    net_income = financials.loc['Net Income'].iloc[0]
+    stockholders_equity = balance_sheet.loc['Stockholders Equity'].iloc[0]
+    operating_income = financials.loc['Operating Income'].iloc[0]
+    total_revenue = financials.loc['Total Revenue'].iloc[0]
+    
+    # 4. Calculate core financial ratios
+    current_ratio = current_assets / current_liabilities
+    roe = (net_income / stockholders_equity) * 100
+    operating_margin = (operating_income / total_revenue) * 100
+    
+    # 5. Display the calculations on the screen
+    print(f"--- {ticker_symbol} Financial Ratios (Most Recent Fiscal Year) ---")
+    print(f"• Current Ratio (Liquidity):     {current_ratio:.2f}")
+    print(f"• Return on Equity (ROE %):     {roe:.2f}%")
+    print(f"• Operating Margin (%):         {operating_margin:.2f}%")
+    print("\n=========================================")
+    print("Success! Your financial analyzer is working.")
+
+except Exception as e:
+    print(f"Accounting Error: Could not parse statements. Details: {e}")
